@@ -1,0 +1,52 @@
+/*import numpy as np
+import os*/    we are libraries used to create tables under python
+
+chemin="wireshark.txt" /*declaration of the variable*/
+
+try:
+    with open(chemin, encoding="utf8") as fh:
+        res=fh.read()
+except:
+    print("Le fichier n'existe pas %s", os.path.abspath(chemin))
+ress=res.split('\n')  /*    try to open the file if you can't arriveWhich is a clever way 
+                            to refer to paths, regardless of the location of the script.*/
+
+tableau_evenements=np.array([])   /* declaration of the table*/
+
+
+SYN ="[S],"
+POUSSER = "[P.],"    /*declaration of the variable  SYN,POUSSER,RST*/
+RST = "[R],"
+
+
+
+print(ress[5])   /*view the liste 5  and go to line*/
+print("\n")
+
+for event in ress:
+    /*initializing character chains  on this part I ask the program to display the string column with ' source 
+                  ip address and destination the sequence number etc.*/
+    if event.startswith('11:42'):
+        texte=event.split()
+        if texte[5] == "Flags":
+            evenement='temps : '+texte[0]+';'+' Adresse Ip source : '+texte[2]+';'+' Adresse IP destinataire : '+texte[4]+';'+' flag : '+texte[6]+';'
+            if texte[6] == SYN:
+                evenement_3 = 'Protocole :' +texte[len(texte)-1]+';'
+                evenement_2 = 'Numéro de séquence : '+texte[8]+';'+' Taille de la fenêtre : '+texte[10]+';'+' Longueur du paquet : '+texte[len(texte)-2]+';'
+            if texte[6] == POUSSER:
+                evenement_3 = ' '
+                evenement_2 = 'Numéro de séquence : '+texte[8]+';'+' Numéro accusé de réception : '+texte[10]+';'
+            if texte[6] == "[.],":
+                evenement_2 = 'Numéro accusé de réception : '+texte[8]+';'+' Taille de la fenêtre : '+texte[10]+';'
+                evenement_3 = ' Longueur du paquet : '+texte[12]+';'
+            if texte[6] == "[S.],":
+                evenement_2 = 'Numéro de séquence : '+texte[8]+';'+' Numéro accusé de réception : '+texte[10]+';'+' Taille de la fenêtre : '+texte[12]+';'
+                evenement_3 = ' Longueur du paquet : '+texte[len(texte)-1]+';'
+            if texte[6] == RST:
+                evenement_2 = ' '
+                evenement_3 = 'RST'
+            with open('fichier1.csv','a') as f:
+                f.write(f"{evenement},{evenement_2},{evenement_3}\n")
+f.close()
+fh.close()
+print('reussit')
